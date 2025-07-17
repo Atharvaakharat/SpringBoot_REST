@@ -1,0 +1,5 @@
+rootProject.name = 'Springboot'
+
+include 'spring-boot-project:spring-boot-data-commons'
+include 'spring-boot-project:spring-boot-starter-jdbc'
+include 'spring-boot-project:spring-data-jdbc'
