@@ -1,0 +1,16 @@
+pitest {
+    targetClasses = ['org.example.*']
+    targetTests = ['org.example.*Test']
+
+    threads = 4
+    mutators = ['DEFAULTS']
+    verbose = true
+
+    junit5PluginVersion = '1.2.3'
+
+    jvmArgs = [
+            '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
+            '--add-opens', 'java.base/java.util=ALL-UNNAMED',
+            '--add-opens', 'java.base/java.lang.reflect=ALL-UNNAMED'
+    ]
+}

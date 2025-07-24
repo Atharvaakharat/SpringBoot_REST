@@ -19,9 +19,6 @@ import java.util.NoSuchElementException;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-/**
- * The type Employee controller test.
- */
 @ExtendWith(MockitoExtension.class)
 public class EmployeeControllerTest {
 
@@ -31,17 +28,11 @@ public class EmployeeControllerTest {
   @InjectMocks
   private EmployeeController employeeController;
 
-  /**
-   * Sets up.
-   */
   @BeforeEach
   public void setUp() {
-    // Custom setup logic can go here if needed
+    // No extra setup needed currently
   }
 
-  /**
-   * Test get all employees success.
-   */
   @Test
   public void testGetAllEmployeesSuccess() {
     Employee emp1 = new Employee();
@@ -57,9 +48,6 @@ public class EmployeeControllerTest {
     assertEquals("Alice", response.getBody().get(0).getName());
   }
 
-  /**
-   * Test get all employees failure.
-   */
   @Test
   public void testGetAllEmployeesFailure() {
     when(employeeService.getAllEmployees()).thenThrow(new RuntimeException("DB error"));
@@ -72,9 +60,18 @@ public class EmployeeControllerTest {
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());
   }
 
-  /**
-   * Test create employee success.
-   */
+  @Test
+  public void testGetAllEmployees_ReturningNull() {
+    when(employeeService.getAllEmployees()).thenReturn(null);
+
+    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+      employeeController.getAllEmployees();
+    });
+
+    assertEquals("Database connection failed", exception.getReason());
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());
+  }
+
   @Test
   public void testCreateEmployeeSuccess() {
     Employee emp = new Employee();
@@ -88,9 +85,6 @@ public class EmployeeControllerTest {
     assertEquals("John", response.getBody().getName());
   }
 
-  /**
-   * Test create employee failure.
-   */
   @Test
   public void testCreateEmployeeFailure() {
     Employee emp = new Employee();
@@ -104,9 +98,6 @@ public class EmployeeControllerTest {
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());
   }
 
-  /**
-   * Test update employee success.
-   */
   @Test
   public void testUpdateEmployeeSuccess() {
     Employee emp = new Employee();
@@ -118,9 +109,6 @@ public class EmployeeControllerTest {
     assertEquals("Updated", response.getBody().getName());
   }
 
-  /**
-   * Test update employee not found.
-   */
   @Test
   public void testUpdateEmployeeNotFound() {
     Employee emp = new Employee();
@@ -135,9 +123,6 @@ public class EmployeeControllerTest {
     assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
   }
 
-  /**
-   * Test update employee failure.
-   */
   @Test
   public void testUpdateEmployeeFailure() {
     Employee emp = new Employee();
