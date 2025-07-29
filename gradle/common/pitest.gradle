@@ -1,16 +1,22 @@
 pitest {
-    targetClasses = ['org.example.*']
+    targetClasses = [
+            'org.example.*'
+    ]
     targetTests = ['org.example.*Test']
+
+    excludedClasses = ['org.example.entity.*',
+                       'org.example.exception.*',
+                       'org.example.security.*',
+                       'org.example.Main']
+    excludedTestClasses=['org.example.exception.*']
+    avoidCallsTo = ['org.example.Main']//todo:log4J
 
     threads = 4
     mutators = ['DEFAULTS']
     verbose = true
-
     junit5PluginVersion = '1.2.3'
-
+    timeoutConstInMillis = 60000
     jvmArgs = [
-            '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
-            '--add-opens', 'java.base/java.util=ALL-UNNAMED',
-            '--add-opens', 'java.base/java.lang.reflect=ALL-UNNAMED'
+            '-Xmx512m',
     ]
 }

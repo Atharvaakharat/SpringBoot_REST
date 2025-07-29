@@ -2,6 +2,7 @@ package org.example.controller;
 
 import org.example.entity.Employee;
 import org.example.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,27 +18,19 @@ import java.util.NoSuchElementException;
 @RequestMapping("/employees")
 public class EmployeeController {
 
-  private final EmployeeService employeeService;
-
-  /**
-   * Instantiates a new Employee controller.
-   *
-   * @param employeeService the employee service
-   */
-  public EmployeeController(EmployeeService employeeService) {
-    this.employeeService = employeeService;
-  }
+  @Autowired
+  private EmployeeService employeeService;
 
   /**
    * Gets all employees.
    *
    * @return the all employees
    */
-  @GetMapping
+  @GetMapping("/all")
   public ResponseEntity<List<Employee>> getAllEmployees() {
     try {
       List<Employee> employees = employeeService.getAllEmployees();
-      if (employees == null) {
+      if (null == employees) {
         throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Database connection failed");
       }
       return ResponseEntity.ok(employees);
@@ -52,7 +45,7 @@ public class EmployeeController {
    * @param employee the employee
    * @return the response entity
    */
-  @PostMapping
+  @PostMapping("/create")
   public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
     try {
       Employee savedEmployee = employeeService.saveEmployee(employee);
@@ -80,4 +73,25 @@ public class EmployeeController {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to update employee", e);
     }
   }
+
+  /**
+   * Update address and position response entity.
+   *
+   * @param id       the id
+   * @param address  the address
+   * @param position the position
+   * @return the response entity
+   */
+  @PatchMapping("/{id}/update-fields")
+  public ResponseEntity<String> updateAddressAndPosition(@PathVariable Long id,
+                                                         @RequestParam String address,
+                                                         @RequestParam String position) {
+    int updated = employeeService.updateAddressAndPositionById(id, address, position);
+    if (updated > 0) {
+      return ResponseEntity.ok("Employee updated successfully");
+    } else {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found");
+    }
+  }
 }
+
