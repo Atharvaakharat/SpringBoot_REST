@@ -19,6 +19,9 @@ import java.util.NoSuchElementException;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * The type Employee controller test.
+ */
 @ExtendWith(MockitoExtension.class)
 public class EmployeeControllerTest {
 
@@ -31,6 +34,9 @@ public class EmployeeControllerTest {
   private Employee emp1;
   private Employee emp2;
 
+  /**
+   * Sets up.
+   */
   @BeforeEach
   public void setUp() {
     // No extra setup needed currently
@@ -50,6 +56,9 @@ public class EmployeeControllerTest {
 
   }
 
+  /**
+   * Test get all employees success.
+   */
   @Test
   public void testGetAllEmployeesSuccess() {
     emp1.setName("Alice");
@@ -78,6 +87,9 @@ public class EmployeeControllerTest {
     assertEquals("Pune", first.getAddress());
   }
 
+  /**
+   * Test get all employees failure.
+   */
   @Test
   public void testGetAllEmployeesFailure() {
     when(employeeService.getAllEmployees()).thenThrow(new RuntimeException("DB error"));
@@ -91,6 +103,9 @@ public class EmployeeControllerTest {
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());
   }
 
+  /**
+   * Test get all employees returning null.
+   */
   @Test
   public void testGetAllEmployees_ReturningNull() {
     when(employeeService.getAllEmployees()).thenReturn(null);
@@ -104,6 +119,9 @@ public class EmployeeControllerTest {
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());
   }
 
+  /**
+   * Test create employee success.
+   */
   @Test
   public void testCreateEmployeeSuccess() {
     emp1.setName("John");
@@ -123,6 +141,9 @@ public class EmployeeControllerTest {
     assertEquals("Delhi", response.getBody().getAddress());
   }
 
+  /**
+   * Test create employee failure.
+   */
   @Test
   public void testCreateEmployeeFailure() {
     when(employeeService.saveEmployee(any(Employee.class))).thenThrow(new RuntimeException("Invalid data"));
@@ -136,6 +157,9 @@ public class EmployeeControllerTest {
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());
   }
 
+  /**
+   * Test update employee success.
+   */
   @Test
   public void testUpdateEmployeeSuccess() {
     emp1.setName("Updated");
@@ -153,6 +177,9 @@ public class EmployeeControllerTest {
     assertEquals("Hyderabad", response.getBody().getAddress());
   }
 
+  /**
+   * Test update employee not found.
+   */
   @Test
   public void testUpdateEmployeeNotFound() {
     when(employeeService.updateEmployee(eq(1L), any(Employee.class)))
@@ -167,6 +194,9 @@ public class EmployeeControllerTest {
     assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
   }
 
+  /**
+   * Test update employee failure.
+   */
   @Test
   public void testUpdateEmployeeFailure() {
     when(employeeService.updateEmployee(eq(1L), any(Employee.class)))
@@ -180,4 +210,36 @@ public class EmployeeControllerTest {
     assertEquals("Failed to update employee", exception.getReason());
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());
   }
+
+  /**
+   * Test update address and position success.
+   */
+  @Test
+  public void testUpdateAddressAndPositionSuccess() {
+    when(employeeService.updateAddressAndPositionById(1L, "New Address", "Manager"))
+            .thenReturn(1);
+
+    ResponseEntity<String> response = employeeController.updateAddressAndPosition(1L, "New Address", "Manager");
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("Employee updated successfully", response.getBody());
+  }
+
+  /**
+   * Test update address and position failure.
+   */
+  @Test
+  public void testUpdateAddressAndPositionFailure() {
+    when(employeeService.updateAddressAndPositionById(1L, "New Address", "Manager"))
+            .thenReturn(0);
+
+    ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+      employeeController.updateAddressAndPosition(1L, "New Address", "Manager");
+    });
+
+    assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+    assertEquals("Employee not found", exception.getReason());
+  }
+
+
 }

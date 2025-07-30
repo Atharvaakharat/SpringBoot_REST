@@ -28,13 +28,28 @@ public class EmployeeServiceImplTest {
   @InjectMocks
   private EmployeeServiceImpl employeeService;
 
+  private Employee validEmployee;
+  private Employee updatedEmployee;
+
   /**
    * Sets up.
    */
   @BeforeEach
   public void setUp() {
-    // Custom setup logic can go here if needed
+    validEmployee = new Employee();
+    validEmployee.setId(1L);
+    validEmployee.setName("Alice");
+    validEmployee.setPosition("Developer");
+    validEmployee.setMobileNo("9876543210");
+    validEmployee.setAddress("Pune");
+
+    updatedEmployee = new Employee();
+    updatedEmployee.setName("Bob");
+    updatedEmployee.setPosition("Senior Developer");
+    updatedEmployee.setMobileNo("1234567890");
+    updatedEmployee.setAddress("Mumbai");
   }
+
 
   /**
    * Test get all employees.
@@ -82,6 +97,10 @@ public class EmployeeServiceImplTest {
     });
     assertEquals("Employee not found", exception.getMessage());
   }
+
+  /**
+   * Test save employee name is null should throw exception.
+   */
   @Test
   public void testSaveEmployee_NameIsNull_ShouldThrowException() {
     Employee employee = new Employee();
@@ -94,6 +113,9 @@ public class EmployeeServiceImplTest {
     assertEquals("Employee name is required", exception.getMessage());
   }
 
+  /**
+   * Test save employee name is blank should throw exception.
+   */
   @Test
   public void testSaveEmployee_NameIsBlank_ShouldThrowException() {
     Employee employee = new Employee();
@@ -106,28 +128,34 @@ public class EmployeeServiceImplTest {
     assertEquals("Employee name is required", exception.getMessage());
   }
 
+  /**
+   * Test update employee name is null should throw exception.
+   */
   @Test
   public void testUpdateEmployee_NameIsNull_ShouldThrowException() {
-    Employee existing = new Employee();
-    existing.setId(1L);
-    when(employeeRepository.findById(1L)).thenReturn(Optional.of(existing)); // <-- THIS IS CRITICAL
+    Employee updateEmp = new Employee();
+    updateEmp.setId(1L);
+    when(employeeRepository.findById(1L)).thenReturn(Optional.of(updateEmp));
 
     Employee update = new Employee();
     update.setName(null);
 
     Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-      employeeService.updateEmployee(1L, update); // <-- this hits line 48
+      employeeService.updateEmployee(1L, update);
     });
 
     assertEquals("Employee name is required for update", exception.getMessage());
   }
 
 
+  /**
+   * Test update employee name is blank should throw exception.
+   */
   @Test
   public void testUpdateEmployee_NameIsBlank_ShouldThrowException() {
-    Employee existing = new Employee();
-    existing.setId(1L);
-    when(employeeRepository.findById(1L)).thenReturn(Optional.of(existing));
+    Employee updateEmp = new Employee();
+    updateEmp.setId(1L);
+    when(employeeRepository.findById(1L)).thenReturn(Optional.of(updateEmp));
 
     Employee update = new Employee();
     update.setName("   ");
@@ -139,13 +167,16 @@ public class EmployeeServiceImplTest {
     assertEquals("Employee name is required for update", exception.getMessage());
   }
 
+  /**
+   * Test update employee name is set correctly.
+   */
   @Test
   public void testUpdateEmployee_NameIsSetCorrectly() {
-    Employee existing = new Employee();
-    existing.setId(1L);
-    existing.setName("Old Name");
+    Employee updateEmp = new Employee();
+    updateEmp.setId(1L);
+    updateEmp.setName("Old Name");
 
-    when(employeeRepository.findById(1L)).thenReturn(Optional.of(existing));
+    when(employeeRepository.findById(1L)).thenReturn(Optional.of(updateEmp));
     when(employeeRepository.save(any(Employee.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
     Employee updated = new Employee();
@@ -161,6 +192,10 @@ public class EmployeeServiceImplTest {
     assertEquals("1234567890", result.getMobileNo());
     assertEquals("Somewhere", result.getAddress());
   }
+
+  /**
+   * Test update address and position by id.
+   */
   @Test
   public void testUpdateAddressAndPositionById() {
     Long employeeId = 1L;

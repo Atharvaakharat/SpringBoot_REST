@@ -1,41 +1,54 @@
 package org.example.service;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.entity.Employee;
 import org.example.repository.EmployeeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
-/**
- * The type Employee service.
- */
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
-  @Autowired
-  private EmployeeRepository employeeRepository;
+  private static final Logger logger = LogManager.getLogger(EmployeeServiceImpl.class);
+
+  private final EmployeeRepository employeeRepository;
+
+  public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+    this.employeeRepository = employeeRepository;
+  }
 
   @Override
   public List<Employee> getAllEmployees() {
+    logger.info("Fetching all employees from the database");
     return employeeRepository.findAll();
   }
 
   @Override
   public Employee saveEmployee(Employee employee) {
+    logger.info("Attempting to save employee: {}", employee.getName());
     if (employee.getName() == null || employee.getName().isBlank()) {
+      logger.warn("Employee name is missing or blank");
       throw new IllegalArgumentException("Employee name is required");
     }
-    return employeeRepository.save(employee);
+    Employee saved = employeeRepository.save(employee);
+    logger.info("Employee saved successfully with ID: {}", saved.getId());
+    return saved;
   }
 
   @Override
   public Employee updateEmployee(Long id, Employee employee) {
+    logger.info("Updating employee with ID: {}", id);
     Employee existing = employeeRepository.findById(id)
-            .orElseThrow(() -> new NoSuchElementException("Employee not found"));
+            .orElseThrow(() -> {
+              logger.error("Employee not found with ID: {}", id);
+              return new NoSuchElementException("Employee not found");
+            });
 
     if (employee.getName() == null || employee.getName().isBlank()) {
+      logger.warn("Employee name is missing or blank during update");
       throw new IllegalArgumentException("Employee name is required for update");
     }
 
@@ -44,11 +57,20 @@ public class EmployeeServiceImpl implements EmployeeService {
     existing.setMobileNo(employee.getMobileNo());
     existing.setAddress(employee.getAddress());
 
-    return employeeRepository.save(existing);
+    Employee updated = employeeRepository.save(existing);
+    logger.info("Employee updated successfully with ID: {}", updated.getId());
+    return updated;
   }
 
   @Override
   public int updateAddressAndPositionById(Long id, String address, String position) {
-    return employeeRepository.updateEmployeeAddressAndPositionById(id, address, position);
+    logger.info("Updating address and position for employee ID: {}", id);
+    int updated = employeeRepository.updateEmployeeAddressAndPositionById(id, address, position);
+    if (updated > 0) {
+      logger.info("Employee address and position updated successfully");
+    } else {
+      logger.warn("No employee found with ID: {}", id);
+    }
+    return updated;
   }
 }
