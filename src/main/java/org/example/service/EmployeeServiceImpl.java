@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * The type Employee service.
+ */
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
@@ -16,6 +19,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
   private final EmployeeRepository employeeRepository;
 
+  /**
+   * Instantiates a new Employee service.
+   *
+   * @param employeeRepository the employee repository
+   */
   public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
     this.employeeRepository = employeeRepository;
   }
@@ -66,7 +74,7 @@ public class EmployeeServiceImpl implements EmployeeService {
   public int updateAddressAndPositionById(Long id, String address, String position) {
     logger.info("Updating address and position for employee ID: {}", id);
     int updated = employeeRepository.updateEmployeeAddressAndPositionById(id, address, position);
-    if (updated > 0) {
+    if (0 < updated) {
       logger.info("Employee address and position updated successfully");
     } else {
       logger.warn("No employee found with ID: {}", id);

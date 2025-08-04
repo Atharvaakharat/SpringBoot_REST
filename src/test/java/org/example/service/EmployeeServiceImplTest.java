@@ -211,6 +211,21 @@ public class EmployeeServiceImplTest {
     verify(employeeRepository, times(1))
             .updateEmployeeAddressAndPositionById(employeeId, newAddress, newPosition);
   }
+  @Test
+  public void testUpdateAddressAndPosition_ReturnZero() {
+    Long employeeId = 1L;
+    String newAddress = "New Street, Pune";
+    String newPosition = "Senior Developer";
+
+    when(employeeRepository.updateEmployeeAddressAndPositionById(employeeId, newAddress, newPosition))
+            .thenReturn(0);
+
+    int result = employeeService.updateAddressAndPositionById(employeeId, newAddress, newPosition);
+
+    assertEquals(0, result);
+    verify(employeeRepository, times(1))
+            .updateEmployeeAddressAndPositionById(employeeId, newAddress, newPosition);
+  }
 
 
 

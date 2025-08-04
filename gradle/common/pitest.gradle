@@ -9,7 +9,11 @@ pitest {
                        'org.example.security.*',
                        'org.example.Main']
     excludedTestClasses=['org.example.exception.*']
-    avoidCallsTo = ['org.example.Main']//todo:log4J
+    avoidCallsTo = [
+            'org.apache.logging.log4j.Logger',
+            'org.apache.logging.log4j.LogManager'
+    ]
+
 
     threads = 4
     mutators = ['DEFAULTS']
