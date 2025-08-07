@@ -7,37 +7,27 @@ import org.example.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
-/**
- * The type Employee controller.
- */
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
 
   private static final Logger logger = LogManager.getLogger(EmployeeController.class);
-@Autowired
-private EmployeeService employeeService;
 
-  /**
-   * Instantiates a new Employee controller.
-   *
-   * @param employeeService the employee service
-   */
+  @Autowired
+  private EmployeeService employeeService;
+
   public EmployeeController(EmployeeService employeeService) {
     this.employeeService = employeeService;
   }
 
-  /**
-   * Gets all employees.
-   *
-   * @return the all employees
-   */
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("/all")
   public ResponseEntity<List<Employee>> getAllEmployees() {
     logger.info("Received request to fetch all employees");
@@ -54,12 +44,7 @@ private EmployeeService employeeService;
     }
   }
 
-  /**
-   * Create employee response entity.
-   *
-   * @param employee the employee
-   * @return the response entity
-   */
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PostMapping("/create")
   public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
     logger.info("Received request to create employee: {}", employee.getName());
@@ -72,13 +57,7 @@ private EmployeeService employeeService;
     }
   }
 
-  /**
-   * Update employee response entity.
-   *
-   * @param id       the id
-   * @param employee the employee
-   * @return the response entity
-   */
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PutMapping("/{id}")
   public ResponseEntity<Employee> updateEmployee(@PathVariable Long id, @RequestBody Employee employee) {
     logger.info("Received request to update employee with ID: {}", id);
@@ -94,14 +73,7 @@ private EmployeeService employeeService;
     }
   }
 
-  /**
-   * Update address and position response entity.
-   *
-   * @param id       the id
-   * @param address  the address
-   * @param position the position
-   * @return the response entity
-   */
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PatchMapping("/{id}/update-fields")
   public ResponseEntity<String> updateAddressAndPosition(@PathVariable Long id,
                                                          @RequestParam String address,

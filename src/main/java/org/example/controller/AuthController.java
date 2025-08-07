@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.example.entity.User;
 import org.example.repository.UserRepository;
 import org.example.security.JwtTokenProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,11 +16,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-
-  private final AuthenticationManager authenticationManager;
-  private final JwtTokenProvider jwtTokenProvider;
-  private final UserRepository userRepository;
-  private final PasswordEncoder passwordEncoder;
+@Autowired
+  private  AuthenticationManager authenticationManager;
+  private  JwtTokenProvider jwtTokenProvider;
+  private  UserRepository userRepository;
+  private  PasswordEncoder passwordEncoder;
 
   public AuthController(AuthenticationManager authenticationManager,
                         JwtTokenProvider jwtTokenProvider,
