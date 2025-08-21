@@ -2,12 +2,13 @@ package org.example.service;
 
 import org.example.entity.ApiTracking;
 import org.example.repository.ApiTrackingRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ApiTrackingService {
-
-  private final ApiTrackingRepository repository;
+@Autowired
+  private ApiTrackingRepository repository;
 
   public ApiTrackingService(ApiTrackingRepository repository) {
     this.repository = repository;
