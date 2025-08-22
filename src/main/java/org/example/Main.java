@@ -6,12 +6,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-
-@SpringBootApplication(scanBasePackages = "org.example")
+@SpringBootApplication(
+        scanBasePackages = "org.example",
+        exclude = { org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class }
+)
 @EntityScan(basePackages = "org.example.entity")
 @EnableJpaRepositories(basePackages = "org.example.repository")
 public class Main {
-
     private static final Logger logger = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
