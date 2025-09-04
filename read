@@ -1,0 +1,47 @@
+
+PS C:\Springboot> cmd /c "echo | openssl s_client -showcerts -connect jsonplaceholder.typicode.com:443 | openssl x509 > jsonplaceholder.crt"
+Connecting to 104.21.16.1
+depth=2 C=US, O=Google Trust Services LLC, CN=GTS Root R4
+verify error:num=20:unable to get local issuer certificate
+verify return:1
+depth=1 C=US, O=Google Trust Services, CN=WE1
+verify return:1
+depth=0 CN=typicode.com
+verify return:1
+PS C:\Springboot> keytool -import -trustcacerts -alias jsonplaceholder \
+Illegal option:  \
+keytool -importcert [OPTION]...
+
+Imports a certificate or a certificate chain
+
+Options:
+
+ -noprompt               do not prompt
+ -trustcacerts           trust certificates from cacerts
+ -protected              password through protected mechanism
+ -alias <alias>          alias name of the entry to process
+ -file <file>            input file name
+ -keypass <arg>          key password
+ -keystore <keystore>    keystore name
+ -cacerts                access the cacerts keystore
+ -storepass <arg>        keystore password
+ -storetype <type>       keystore type
+ -providername <name>    provider name
+ -addprovider <name>     add security provider by name (e.g. SunPKCS11)
+   [-providerarg <arg>]    configure argument for -addprovider
+ -providerclass <class>  add security provider by fully-qualified class name
+   [-providerarg <arg>]    configure argument for -providerclass
+ -providerpath <list>    provider classpath
+ -v                      verbose output
+
+Use "keytool -?, -h, or --help" for this help message
+PS C:\Springboot>   -file jsonplaceholder.crt \
+-file : The term '-file' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify 
+that the path is correct and try again.
+At line:1 char:3
++   -file jsonplaceholder.crt \
++   ~~~~~
+    + CategoryInfo          : ObjectNotFound: (-file:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+
+PS C:\Springboot>   -keystore "C:\Program Files\Java\jdk-17\lib\security\cacerts"
